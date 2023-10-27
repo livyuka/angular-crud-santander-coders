@@ -16,43 +16,53 @@ export class CustomerService {
       email: "livia@email.com",
       dateOfBirth: new Date("1998-05-14")
     }
+    this.customers.push(customer);
+
     let customer2: Customer = {
       id: 2,
       name: "Yuraki",
       email: "livia@email.com",
       dateOfBirth: new Date("1998-05-14")
     }
-
-    this.customers.push(customer);
     this.customers.push(customer2);
-
-
   }
 
   getList(): Customer[] {
     return this.customers;
   }
 
-  getById(){
-
-  }
-
-  add(customer: Customer) {
-    this.customers.push(customer);
-
+  getById(id:number){
+   return this.customers.find(customer => customer.id === id)
   }
 
   update(customer: Customer) {
-    this.customers
+    let searchCustomer = this.getById(customer.id);
 
+    if (searchCustomer){
+      searchCustomer.name = customer.name;
+      searchCustomer.dateOfBirth = customer.dateOfBirth;
+      searchCustomer.email = customer.email;
+    }
   }
 
   delete(id: number) {
     this.customers = this.customers.filter(customer => customer.id !== id);
   }
 
-  create(){
+  create(customer:Customer){
+    const maxId:number = this.getMaxId();
 
+    if (maxId)
+      customer.id = maxId + 1
+    else
+      customer.id = 1
+
+    this.customers.push(customer)
   }
 
+  getMaxId():number{
+    return this.customers.reduce((maxId, customer) => {
+      return customer.id > maxId ? customer.id : maxId;
+    }, 0);
+  }
 }
