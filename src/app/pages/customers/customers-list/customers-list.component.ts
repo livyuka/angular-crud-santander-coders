@@ -35,5 +35,4 @@ export class CustomersListComponent implements OnInit {
   openModalToConfirmDelete(id:number){
     this.customerIdSelectedToDelete = id;
   }
-
 }

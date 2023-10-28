@@ -1,3 +1,17 @@
 .container{
   max-width: 350px;
 }
+.warning-message{
+  height: 10px;
+  margin-bottom: 8px;
+}
+.text-danger{
+  font-size: 12px;
+}
+
+.btn-primary:disabled {
+  background-color: grey;
+  border-color: grey;
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { Customer } from 'src/app/model/customer';
@@ -11,47 +11,47 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './customers-edit.component.html',
   styleUrls: ['./customers-edit.component.css']
 })
-export class CustomersEditComponent implements OnInit{
+export class CustomersEditComponent implements OnInit {
 
   id: number = -1
   customerForm: FormGroup
 
-  constructor (
+  constructor(
     private route: ActivatedRoute,
     private router: Router,
     private customerService: CustomerService,
     private toastr: ToastrService
-    ){
-      this.customerForm = new FormGroup({
-        name: new FormControl("",[Validators.required,Validators.minLength(3)]),
-        dateOfBirth: new FormControl("",[Validators.required]),
-        email: new FormControl("",[Validators.required, Validators.email])
-      })
+  ) {
+    this.customerForm = new FormGroup({
+      name: new FormControl("", [Validators.required, Validators.minLength(3)]),
+      dateOfBirth: new FormControl("", [Validators.required, this.dateValidator()]),
+      email: new FormControl("", [Validators.required, Validators.email])
+    })
   }
 
-  ngOnInit(){
+  ngOnInit() {
     const getId = this.route.snapshot.paramMap.get('id');
 
-    if (getId){
+    if (getId) {
       this.id = parseInt(getId);
-      const currentCustomer= this.customerService.getById(this.id);
+      const currentCustomer = this.customerService.getById(this.id);
 
       this.customerForm = new FormGroup({
-        name: new FormControl(currentCustomer?.name,[Validators.required, Validators.minLength(3)]),
-        dateOfBirth: new FormControl(currentCustomer?.dateOfBirth,[Validators.required]),
-        email: new FormControl(currentCustomer?.email,[Validators.required, Validators.email])
+        name: new FormControl(currentCustomer?.name, [Validators.required, Validators.minLength(3)]),
+        dateOfBirth: new FormControl(currentCustomer?.dateOfBirth, [Validators.required, this.dateValidator()]),
+        email: new FormControl(currentCustomer?.email, [Validators.required, Validators.email])
       })
     }
   }
 
-  goToCustomerList(){
+  goToCustomerList() {
     this.router.navigate(['customer-list'])
   }
 
-  onSubmit(customer:Customer){
-    if(this.id === -1)
+  onSubmit(customer: Customer) {
+    if (this.id === -1)
       this.customerService.create(customer)
-    else{
+    else {
       customer.id = this.id;
       this.customerService.update(customer)
     }
@@ -61,5 +61,22 @@ export class CustomersEditComponent implements OnInit{
 
   showSuccess() {
     this.toastr.success('Cliente salvo com sucesso!');
+  }
+
+
+  dateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const today = new Date().getTime();
+      const valueAsDate = new Date(control.value);
+
+      if(!(control && control.value)) {
+        return null;
+      }
+
+      if (isNaN(valueAsDate.getTime()) || valueAsDate.getTime() > today) {
+        return { 'invalidDate': true };
+      }
+      return null;
+    }
   }
 }

@@ -12,7 +12,7 @@ import { LoginService } from 'src/app/services/login.service';
 })
 export class LoginComponent implements OnInit {
 
-  email: string = "";
+  user: string = "";
   password: string = "";
   loginForm: FormGroup;
 
@@ -22,13 +22,13 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.loginForm = new FormGroup({
-      email: new FormControl("", [Validators.required,Validators.email]),
+      user: new FormControl("", [Validators.required]),
       password: new FormControl("", [Validators.required])
     })
   }
 
   onSubmit(loginForm: Login) {
-    if (this.loginService.verifyCredentials(loginForm.email, loginForm.password)) {
+    if (this.loginService.verifyCredentials(loginForm.user, loginForm.password)) {
       this.router.navigate(['customer-list'])
     } else {
       this.toastr.error('Usuário ou senha incorretos')

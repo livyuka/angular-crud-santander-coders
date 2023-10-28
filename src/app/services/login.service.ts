@@ -6,14 +6,14 @@ import { Login } from '../model/login';
 })
 export class LoginService {
   private fixedCredentials:Login = {
-    email: "email@ada.com",
-    password: "senhadificil"
+    user: "admin",
+    password: "admin"
   }
 
   constructor() {}
 
-  verifyCredentials(email: string, password: string):boolean{
-    return email === this.fixedCredentials.email && password === this.fixedCredentials.password
+  verifyCredentials(user: string, password: string):boolean{
+    return user === this.fixedCredentials.user && password === this.fixedCredentials.password
   }
 
 }
